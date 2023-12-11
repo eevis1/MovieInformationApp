@@ -1,315 +1,54 @@
-/*// Function to fetch theaters from Finnkino API and populate the dropdown
-function fetchTheaters() {
-  const theaterSelect = document.getElementById('theaterSelect');
-
-  fetch('http://www.finnkino.fi/xml/TheatreAreas/')
-    .then(response => response.text())
-    .then(data => {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(data, 'text/xml');
-      const theaters = xml.querySelectorAll('TheatreArea');
-
-      theaters.forEach(theater => {
-        const option = document.createElement('option');
-        option.value = theater.querySelector('ID').textContent;
-        option.textContent = theater.querySelector('Name').textContent;
-        theaterSelect.appendChild(option);
-      });
-
-      // Trigger fetching movies for the initially selected theater
-      const initialTheaterId = theaterSelect.value;
-      fetchMovies(initialTheaterId);
-    })
-    .catch(error => console.error('Error fetching theaters:', error));
-}
-
-// Function to fetch movies for a given theater from Finnkino API
-function fetchMovies(theaterId) {
-  const moviesList = document.getElementById('moviesList');
-  moviesList.innerHTML = ''; // Clear previous movies
-
-  fetch(`http://www.finnkino.fi/xml/Schedule/?area=${theaterId}`)
-    .then(response => response.text())
-    .then(movieData => {
-      const movieParser = new DOMParser();
-      const moviesXml = movieParser.parseFromString(movieData, 'text/xml');
-      const movies = moviesXml.querySelectorAll('Show');
-
-      movies.forEach(movie => {
-        const title = movie.querySelector('Title').textContent;
-        const originaltitle = movie.querySelector('OriginalTitle').textContent;
-        const year = movie.querySelector('ProductionYear').textContent;
-        const start = movie.querySelector('dttmShowStart').textContent;
-        const imageUrl = movie.querySelector('EventSmallImagePortrait').textContent;
-
-        const movieDiv = document.createElement('div');
-        movieDiv.classList.add('movie');
-
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        movieDiv.appendChild(img);
-
-        const titleHeading = document.createElement('h2');
-        titleHeading.textContent = title;
-        movieDiv.appendChild(titleHeading);
-
-        const startTime = document.createElement('p');
-        startTime.textContent = `Starts at: ${start}`;
-        movieDiv.appendChild(startTime);
-
-        const infoButton = document.createElement('button');
-        infoButton.textContent = 'Info';
-        infoButton.classList.add('info-button');
-        movieDiv.appendChild(infoButton);
-
-        infoButton.addEventListener('click', () => {
-          displayOMDBInfo(title);
-        });
-
-        moviesList.appendChild(movieDiv);
-      });
-    })
-    .catch(error => console.error('Error fetching movies:', error));
-}
-
-
-function displayOMDBInfo(title) {
-  // Fetching the IMDB ID first
-  fetch(`http://www.omdbapi.com/?apikey=5eedae7&s=${title}&type=movie`) // Search for movies by title
-    .then(response => response.json())
-    .then(data => {
-      const movies = data.Search;
-      if (movies && movies.length > 0) {
-        const imdbID = movies[0].imdbID; // Get the IMDB ID of the first movie in the search results
-        fetch(`http://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`) // Fetch movie details by IMDB ID
-          .then(response => response.json())
-          .then(movieInfo => {
-            const moviesList = document.getElementById('moviesList');
-            moviesList.innerHTML = `<div class="movie-details">
-                                      <h2>${movieInfo.Title}</h2>
-                                      <img src="${movieInfo.Poster}" alt="${movieInfo.Title}">
-                                      <p>${movieInfo.Plot}</p>
-                                      <p>Director: ${movieInfo.Director}</p>
-                                      <p>Actors: ${movieInfo.Actors}</p>
-                                      <p>Released: ${movieInfo.Released}</p>
-                                    </div>`;
-          })
-          .catch(error => console.error('Error fetching movie details:', error));
-      } else {
-        console.log('Movie not found!');
-      }
-    })
-    .catch(error => console.error('Error fetching movie ID:', error));
-}
-
-// Event listener for theater selection
-document.getElementById('theaterSelect').addEventListener('change', event => {
-  fetchMovies(event.target.value);
-});
-
-// Event listener for custom movie search
-document.getElementById('searchButton').addEventListener('click', () => {
-  const searchTerm = document.getElementById('searchInput').value.trim();
-  if (searchTerm !== '') {
-    displayOMDBInfo(searchTerm);
-  } else {
-    console.log('Please enter a movie title.');
-  }
-});
-
-// Fetch theaters when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', fetchTheaters);
-
-*/
-
-
-/*
-// Function to fetch theaters from Finnkino API and populate the dropdown
-function fetchTheaters() {
-  const theaterSelect = document.getElementById('theaterSelect');
-
-  fetch('http://www.finnkino.fi/xml/TheatreAreas/')
-    .then(response => response.text())
-    .then(data => {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(data, 'text/xml');
-      const theaters = xml.querySelectorAll('TheatreArea');
-
-      theaters.forEach(theater => {
-        const option = document.createElement('option');
-        option.value = theater.querySelector('ID').textContent;
-        option.textContent = theater.querySelector('Name').textContent;
-        theaterSelect.appendChild(option);
-      });
-
-      // Trigger fetching movies for the initially selected theater
-      const initialTheaterId = theaterSelect.value;
-      fetchMovies(initialTheaterId);
-    })
-    .catch(error => console.error('Error fetching theaters:', error));
-}
-
-// Function to fetch movies for a given theater from Finnkino API
-function fetchMovies(theaterId) {
-  const moviesList = document.getElementById('moviesList');
-  moviesList.innerHTML = ''; // Clear previous movies
-
-  fetch(`http://www.finnkino.fi/xml/Schedule/?area=${theaterId}`)
-    .then(response => response.text())
-    .then(movieData => {
-      const movieParser = new DOMParser();
-      const moviesXml = movieParser.parseFromString(movieData, 'text/xml');
-      const movies = moviesXml.querySelectorAll('Show');
-
-      movies.forEach(movie => {
-        const title = movie.querySelector('Title').textContent;
-        const originalTitle = movie.querySelector('OriginalTitle').textContent;
-        const year = movie.querySelector('ProductionYear').textContent;
-        const start = movie.querySelector('dttmShowStart').textContent;
-        const imageUrl = movie.querySelector('EventSmallImagePortrait').textContent;
-
-        const movieDiv = document.createElement('div');
-        movieDiv.classList.add('movie');
-
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        movieDiv.appendChild(img);
-
-        const titleHeading = document.createElement('h2');
-        titleHeading.textContent = title;
-        movieDiv.appendChild(titleHeading);
-
-        const startTime = document.createElement('p');
-        startTime.textContent = `Starts at: ${start}`;
-        movieDiv.appendChild(startTime);
-
-        const infoButton = document.createElement('button');
-        infoButton.textContent = 'Info';
-        infoButton.classList.add('info-button');
-        movieDiv.appendChild(infoButton);
-
-        infoButton.addEventListener('click', () => {
-          displayOMDBInfo(title, originalTitle);
-        });
-
-        moviesList.appendChild(movieDiv);
-      });
-    })
-    .catch(error => console.error('Error fetching movies:', error));
-}
-
-function displayOMDBInfo(title, originalTitle) {
-  // Function to display movie details from OMDB API
-  function displayMovieDetails(movieInfo) {
-    const moviesList = document.getElementById('moviesList');
-    moviesList.innerHTML = `<div class="movie-details">
-                              <h2>${movieInfo.Title}</h2>
-                              <img src="${movieInfo.Poster}" alt="${movieInfo.Title}">
-                              <p>${movieInfo.Plot}</p>
-                              <p>Director: ${movieInfo.Director}</p>
-                              <p>Actors: ${movieInfo.Actors}</p>
-                              <p>Released: ${movieInfo.Released}</p>
-                            </div>`;
-  }
-
-  fetch(`http://www.omdbapi.com/?apikey=5eedae7&t=${title}&type=movie`) // Search for movies by title
-    .then(response => response.json())
-    .then(data => {
-      const movies = data.Search;
-      if (movies && movies.length > 0) {
-        const imdbID = movies[0].imdbID; // Get the IMDB ID of the first movie in the search results
-        fetch(`http://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`) // Fetch movie details by IMDB ID
-          .then(response => response.json())
-          .then(movieInfo => {
-            displayMovieDetails(movieInfo);
-          })
-          .catch(error => console.error('Error fetching movie details:', error));
-      } else {
-        // If no data found with the title, search by original title
-        fetch(`http://www.omdbapi.com/?apikey=5eedae7&t=${originalTitle}&type=movie`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.Response === 'True') {
-              fetch(`http://www.omdbapi.com/?apikey=5eedae7&i=${data.imdbID}&plot=full`)
-                .then(response => response.json())
-                .then(movieInfo => {
-                  displayMovieDetails(movieInfo);
-                })
-                .catch(error => console.error('Error fetching movie details:', error));
-            } else {
-              console.log('Movie not found!');
-            }
-          })
-          .catch(error => console.error('Error fetching movie details:', error));
-      }
-    })
-    .catch(error => console.error('Error fetching movie ID:', error));
-}
-
-// Event listener for theater selection
-document.getElementById('theaterSelect').addEventListener('change', event => {
-  fetchMovies(event.target.value);
-});
-
-// Event listener for custom movie search
-document.getElementById('searchButton').addEventListener('click', () => {
-  const searchTerm = document.getElementById('searchInput').value.trim();
-  if (searchTerm !== '') {
-    displayOMDBInfo(searchTerm);
-  } else {
-    console.log('Please enter a movie title.');
-  }
-});
-
-// Fetch theaters when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', fetchTheaters);
-*/
-
 // Function to format date as day/month/year
 function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
-  return date.toLocaleDateString(undefined, options);
+  const date = new Date(dateString); // Create a new Date object using the input dateString
+  const options = { day: 'numeric', month: 'numeric', year: 'numeric' }; // Define formatting options
+  return date.toLocaleDateString(undefined, options); // Convert the date to a localized date string in the specified format
 }
 
 // Function to fetch theaters from Finnkino API and populate the dropdown
 function fetchTheaters() {
+  // Get the theater selection dropdown element
   const theaterSelect = document.getElementById('theaterSelect');
 
-  fetch('http://www.finnkino.fi/xml/TheatreAreas/')
+  // Fetch theaters data from the Finnkino API
+  fetch('https://www.finnkino.fi/xml/TheatreAreas/')
     .then(response => response.text())
     .then(data => {
+      // Parse the XML response to extract theater information
       const parser = new DOMParser();
       const xml = parser.parseFromString(data, 'text/xml');
       const theaters = xml.querySelectorAll('TheatreArea');
 
+      // Add theaters to the dropdown
       theaters.forEach(theater => {
+        // Create an option element for each theater and set its value and text content
         const option = document.createElement('option');
-        option.value = theater.querySelector('ID').textContent;
-        option.textContent = theater.querySelector('Name').textContent;
-        theaterSelect.appendChild(option);
+        option.value = theater.querySelector('ID').textContent; // Set the option's value to theater ID
+        option.textContent = theater.querySelector('Name').textContent; // Set the option's text to theater name
+        theaterSelect.appendChild(option); // Add the option to the theater selection dropdown
       });
 
       // Trigger fetching movies for the initially selected theater
       const initialTheaterId = theaterSelect.value;
-      fetchMovies(initialTheaterId);
+      fetchMovies(initialTheaterId); // Call the fetchMovies function to load movies for the initially selected theater
     })
-    .catch(error => console.error('Error fetching theaters:', error));
+    .catch(error => console.error('Error fetching theaters:', error)); //Catch an error
 }
-
 
 // Function to fetch movies for a given theater from Finnkino API
 function fetchMovies(theaterId) {
   const moviesList = document.getElementById('moviesList');
   moviesList.innerHTML = ''; // Clear previous movies
 
-  fetch(`http://www.finnkino.fi/xml/Schedule/?area=${theaterId}`)
+  fetch(`https://www.finnkino.fi/xml/Schedule/?area=${theaterId}`)
     .then(response => response.text())
     .then(movieData => {
+      // Parse the XML response to extract movie details
       const movieParser = new DOMParser();
       const moviesXml = movieParser.parseFromString(movieData, 'text/xml');
       const movies = moviesXml.querySelectorAll('Show');
 
+      // Loop through the movies and display their details
       movies.forEach(movie => {
         const title = movie.querySelector('Title').textContent;
         const originalTitle = movie.querySelector('OriginalTitle').textContent;
@@ -322,24 +61,27 @@ function fetchMovies(theaterId) {
         const movieDiv = document.createElement('div');
         movieDiv.classList.add('movie');
 
-        const img = document.createElement('img');
+        // Create elements to display movie details
+        const img = document.createElement('img'); // Image
         img.src = imageUrl;
         movieDiv.appendChild(img);
 
-        const titleHeading = document.createElement('h2');
+        const titleHeading = document.createElement('h2'); //Title
         titleHeading.textContent = title;
         movieDiv.appendChild(titleHeading);
 
-
+        // Display movie showtime
         const showTime = document.createElement('p');
         showTime.textContent = `${startDate}\nStarts at: ${startTime}`; // Combine formatted date and time
         movieDiv.appendChild(showTime);
 
+        // Create 'info' button for each movie
         const infoButton = document.createElement('button');
         infoButton.textContent = 'Info';
         infoButton.classList.add('info-button');
         movieDiv.appendChild(infoButton);
 
+         // Event listener for 'info' button click to display movie details from OMDB API
         infoButton.addEventListener('click', () => {
           displayOMDBInfo(title, originalTitle);
         });
@@ -350,8 +92,10 @@ function fetchMovies(theaterId) {
     .catch(error => console.error('Error fetching movies:', error));
 }
 
+// Function to display movie details obtained from OMDB API
 function displayOMDBInfo(title, originalTitle) {
   function displayMovieDetails(movieInfo) {
+    // Display movie details fetched from OMDB API
     const moviesList = document.getElementById('moviesList');
     moviesList.innerHTML = `<div class="movie-details">
                               <h2>${movieInfo.Title}</h2>
@@ -363,27 +107,32 @@ function displayOMDBInfo(title, originalTitle) {
                             </div>`;
   }
 
-  fetch(`http://www.omdbapi.com/?apikey=5eedae7&t=${title}&type=movie`)
+  // Fetch movie details from OMDB API using the movie title
+  fetch(`https://www.omdbapi.com/?apikey=5eedae7&t=${title}&type=movie`)
     .then(response => response.json())
     .then(data => {
+      // Check if movie details were found
       if (data.Response === 'True') {
         const imdbID = data.imdbID;
-        fetch(`http://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`)
+        // Fetch detailed movie information using IMDB ID
+        fetch(`https://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`)
           .then(response => response.json())
           .then(movieInfo => {
-            displayMovieDetails(movieInfo);
+            displayMovieDetails(movieInfo); // Display detailed movie information
           })
           .catch(error => console.error('Error fetching movie details:', error));
       } else {
-        fetch(`http://www.omdbapi.com/?apikey=5eedae7&t=${originalTitle}&type=movie`)
+        // If movie details not found using the primary title, try using the original title
+        fetch(`https://www.omdbapi.com/?apikey=5eedae7&t=${originalTitle}&type=movie`)
           .then(response => response.json())
           .then(data => {
             if (data.Response === 'True') {
               const imdbID = data.imdbID;
-              fetch(`http://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`)
+              // Fetch detailed movie information using IMDB ID
+              fetch(`https://www.omdbapi.com/?apikey=5eedae7&i=${imdbID}&plot=full`)
                 .then(response => response.json())
                 .then(movieInfo => {
-                  displayMovieDetails(movieInfo);
+                  displayMovieDetails(movieInfo); // Display detailed movie information
                 })
                 .catch(error => console.error('Error fetching movie details:', error));
             } else {
@@ -398,14 +147,14 @@ function displayOMDBInfo(title, originalTitle) {
 
 // Event listener for theater selection
 document.getElementById('theaterSelect').addEventListener('change', event => {
-  fetchMovies(event.target.value);
+  fetchMovies(event.target.value); // Fetch movies for the selected theater
 });
 
 // Event listener for custom movie search
 document.getElementById('searchButton').addEventListener('click', () => {
   const searchTerm = document.getElementById('searchInput').value.trim();
   if (searchTerm !== '') {
-    displayOMDBInfo(searchTerm);
+    displayOMDBInfo(searchTerm); // Display movie details based on search term
   } else {
     console.log('Please enter a movie title.');
   }
