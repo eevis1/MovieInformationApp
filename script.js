@@ -12,13 +12,13 @@ function fetchTheaters() {
 
   // Fetch theaters data from the Finnkino API
   fetch('https://www.finnkino.fi/xml/TheatreAreas/')
-    .then(response => response.text())
-    .then(data => {
+    .then(response => response.text()) // Convert the response to text format
+    .then(data => { // Process the converted text data
       // Parse the XML response to extract theater information
       const parser = new DOMParser();
-      const xml = parser.parseFromString(data, 'text/xml');
-      const theaters = xml.querySelectorAll('TheatreArea');
-
+      const xml = parser.parseFromString(data, 'text/xml'); // Parse the received XML data into an XML document
+      const theaters = xml.querySelectorAll('TheatreArea'); // Extract all 'TheatreArea' elements from the parsed XML document
+ 
       // Add theaters to the dropdown
       theaters.forEach(theater => {
         // Create an option element for each theater and set its value and text content
@@ -153,7 +153,7 @@ function displayOMDBInfo(title, originalTitle) {
                 })
                 .catch(error => console.error('Error fetching movie details:', error)); // Catch an error fetching movie details
             } else {
-              console.log('Movie not found!'); // Error message
+              console.log('Movie not found!'); // Error message Movie not found
             }
           })
           .catch(error => console.error('Error fetching movie details:', error)); // Catch an error fetching movie details
