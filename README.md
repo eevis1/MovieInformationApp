@@ -1,1 +1,3 @@
 # MovieInformationApp
+
+Eva-Maria Tillder
